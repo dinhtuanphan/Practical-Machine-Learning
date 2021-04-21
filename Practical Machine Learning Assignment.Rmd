@@ -1,0 +1,82 @@
+---
+title: "Practical Machine Learning Assignment"
+author: "Dinh Tuan Phan"
+date: "4/21/2021"
+output: html_document
+---
+
+## Data processing
+First, we install the required packages and load library.
+
+```{r, echo = TRUE, message = FALSE, warning = FALSE}
+library('randomForest')
+library('caret')
+library('e1071')
+```
+
+Next, we read the data and remove the NA value.
+
+```{r}
+a=read.csv('pml-training.csv',na.strings=c('','NA'))
+b=a[,!apply(a,2,function(x) any(is.na(x)) )]
+c=b[,-c(1:7)]
+```
+
+We split the data into two group with the ratio 60% train and 40% test
+
+```{r}
+subGrps=createDataPartition(y=c$classe, p=0.6, list=FALSE)
+subTraining=c[subGrps,]
+subTesting=c[-subGrps, ]
+dim(subTraining);dim(subTesting)
+```
+
+## Build model
+
+We next build the model using the training data. Here we use random forest algorithm. When the model is built, we continue to predict the outcome using test data and check the confusion matrix.
+
+```{r}
+model=randomForest(classe~., data=subTraining, method='class')
+pred=predict(model,subTesting, type='class')
+z=confusionMatrix(pred,subTesting$classe)
+save(z,file='test.RData')
+```
+
+Load the test data
+
+```{r}
+load('test.RData')
+z$table
+```
+
+Check the accuracy of model
+
+```{r}
+z$overall[1]
+```
+
+The result is good with the accuracy over 99%. So we will use this model to test on the test data.
+
+
+## Test on data
+We load the test data and remove the NA values.
+
+```{r}
+d=read.csv('pml-testing.csv',na.strings=c('','NA'))
+e=d[,!apply(d,2,function(x) any(is.na(x)) )]
+f=e[,-c(1:7)]
+```
+
+Run the prediction using the random forest model.
+
+```{r}
+predicted=predict(model,f,type='class')
+save(predicted,file='predicted.RData')
+```
+
+The result is printed out.
+
+```{r}
+load('predicted.RData')
+print(predicted, type = 'html')
+```
