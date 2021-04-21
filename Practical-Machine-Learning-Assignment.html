@@ -177,7 +177,7 @@ pre code {
 <pre class="r"><code>library(&#39;randomForest&#39;)
 library(&#39;caret&#39;)
 library(&#39;e1071&#39;)</code></pre>
-<p>Next, we read the data and remove the NA value.</p>
+<p>Next, we read the data and remove the NA values.</p>
 <pre class="r"><code>a=read.csv(&#39;pml-training.csv&#39;,na.strings=c(&#39;&#39;,&#39;NA&#39;))
 b=a[,!apply(a,2,function(x) any(is.na(x)) )]
 c=b[,-c(1:7)]</code></pre>
@@ -201,15 +201,15 @@ save(z,file=&#39;test.RData&#39;)</code></pre>
 z$table</code></pre>
 <pre><code>##           Reference
 ## Prediction    A    B    C    D    E
-##          A 2231   10    0    0    0
-##          B    0 1504   14    0    0
-##          C    0    4 1352   17    0
-##          D    0    0    2 1267    1
-##          E    1    0    0    2 1441</code></pre>
+##          A 2228   11    0    0    0
+##          B    1 1500    6    0    0
+##          C    2    7 1361   22    1
+##          D    0    0    1 1264    5
+##          E    1    0    0    0 1436</code></pre>
 <p>Check the accuracy of model</p>
 <pre class="r"><code>z$overall[1]</code></pre>
 <pre><code>##  Accuracy 
-## 0.9934999</code></pre>
+## 0.9927352</code></pre>
 <p>The result is good with the accuracy over 99%. So we will use this model to test on the test data.</p>
 </div>
 <div id="test-on-data" class="section level2">
