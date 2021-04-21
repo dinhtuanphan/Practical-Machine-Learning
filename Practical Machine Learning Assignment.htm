@@ -1,0 +1,251 @@
+<html>
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<meta name=Generator content="Microsoft Word 15 (filtered)">
+<style>
+<!--
+ /* Font Definitions */
+ @font-face
+	{font-family:"Cambria Math";
+	panose-1:2 4 5 3 5 4 6 3 2 4;}
+@font-face
+	{font-family:Calibri;
+	panose-1:2 15 5 2 2 2 4 3 2 4;}
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin-top:0in;
+	margin-right:0in;
+	margin-bottom:8.0pt;
+	margin-left:0in;
+	line-height:107%;
+	font-size:11.0pt;
+	font-family:"Calibri",sans-serif;}
+.MsoChpDefault
+	{font-family:"Calibri",sans-serif;}
+.MsoPapDefault
+	{margin-bottom:8.0pt;
+	line-height:107%;}
+@page WordSection1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.0in 1.0in 1.0in;}
+div.WordSection1
+	{page:WordSection1;}
+-->
+</style>
+
+</head>
+
+<body lang=EN-US style='word-wrap:break-word'>
+
+<div class=WordSection1>
+
+<p class=MsoNormal align=center style='text-align:center'><b><span
+style='font-family:"Arial",sans-serif'>Practical Machine Learning Assignment</span></b></p>
+
+<p class=MsoNormal><span style='font-family:"Arial",sans-serif'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-family:"Arial",sans-serif'>First, we
+install the required packages and load library.</span></p>
+
+<p class=MsoNormal><span style='font-family:"Courier New"'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-family:"Courier New"'># Install packages
+and load library</span></p>
+
+<p class=MsoNormal><span style='font-family:"Courier New"'>install.packages('randomForest')</span></p>
+
+<p class=MsoNormal><span style='font-family:"Courier New"'>library('randomForest')</span></p>
+
+<p class=MsoNormal><span style='font-family:"Courier New"'>install.packages('caret')</span></p>
+
+<p class=MsoNormal><span style='font-family:"Courier New"'>library('caret')</span></p>
+
+<p class=MsoNormal><span style='font-family:"Courier New"'>install.packages('e1071')</span></p>
+
+<p class=MsoNormal><span style='font-family:"Courier New"'>library('e1071')</span></p>
+
+<p class=MsoNormal><span style='font-family:"Courier New"'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-family:"Arial",sans-serif'>Next, we read
+the data and remove the NA value.</span></p>
+
+<p class=MsoNormal><span style='font-family:"Arial",sans-serif'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-family:"Courier New"'># Read data frame</span></p>
+
+<p class=MsoNormal><span style='font-family:"Courier New"'>a=read.csv('pml-training.csv',na.strings=c('','NA'))</span></p>
+
+<p class=MsoNormal><span style='font-family:"Courier New"'>b=a[,!apply(a,2,function(x)
+any(is.na(x)) )]</span></p>
+
+<p class=MsoNormal><span style='font-family:"Courier New"'>c=b[,-c(1:7)]</span></p>
+
+<p class=MsoNormal><span style='font-family:"Courier New"'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-family:"Arial",sans-serif'>We split the
+data into two group with the ratio 60% train and 40% test</span></p>
+
+<p class=MsoNormal><span style='font-family:"Arial",sans-serif'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-family:"Courier New"'>#For cross
+validation, split our testing data into sub groups 60:40</span></p>
+
+<p class=MsoNormal><span style='font-family:"Courier New"'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-family:"Courier New"'>subGrps=createDataPartition(y=c$classe,
+p=0.6, list=FALSE)</span></p>
+
+<p class=MsoNormal><span style='font-family:"Courier New"'>subTraining=c[subGrps,]</span></p>
+
+<p class=MsoNormal><span style='font-family:"Courier New"'>subTesting=c[-subGrps,
+]</span></p>
+
+<p class=MsoNormal><span style='font-family:"Courier New"'>dim(subTraining);dim(subTesting)</span></p>
+
+<p class=MsoNormal><span style='font-family:"Courier New"'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-family:"Courier New"'>[1] 11776    53</span></p>
+
+<p class=MsoNormal><span style='font-family:"Courier New"'>[1] 7846   53</span></p>
+
+<p class=MsoNormal><span style='font-family:"Arial",sans-serif'>We next build
+the model using the training data. Here we use random forest algorithm. When
+the model is built, we continue to predict the outcome using test data and
+check the confusion matrix.</span></p>
+
+<p class=MsoNormal><span style='font-family:"Courier New"'># Build prediction
+model based on random forest paradigm</span></p>
+
+<p class=MsoNormal><span style='font-family:"Courier New"'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-family:"Courier New"'>model=randomForest(classe~.,
+data=subTraining, method='class')</span></p>
+
+<p class=MsoNormal><span style='font-family:"Courier New"'>pred=predict(model,subTesting,
+type='class')</span></p>
+
+<p class=MsoNormal><span style='font-family:"Courier New"'>z=confusionMatrix(pred,subTesting$classe)</span></p>
+
+<p class=MsoNormal><span style='font-family:"Courier New"'>save(z,file='test.RData')</span></p>
+
+<p class=MsoNormal><span style='font-family:"Courier New"'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-family:"Courier New"'># Load data</span></p>
+
+<p class=MsoNormal><span style='font-family:"Courier New"'>load('test.RData')</span></p>
+
+<p class=MsoNormal><span style='font-family:"Courier New"'>z$table</span></p>
+
+<p class=MsoNormal><span style='font-family:"Courier New"'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-family:"Arial",sans-serif'>The result is
+good with the accuracy over 99%. So we will use this model to test on the test
+data.</span></p>
+
+<p class=MsoNormal><span style='font-family:"Arial",sans-serif'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-family:"Arial",sans-serif'>         
+Reference</span></p>
+
+<p class=MsoNormal><span style='font-family:"Arial",sans-serif'>Prediction   
+A    B    C    D    E</span></p>
+
+<p class=MsoNormal><span style='font-family:"Arial",sans-serif'>         A
+2229   20    0    0    0</span></p>
+
+<p class=MsoNormal><span style='font-family:"Arial",sans-serif'>         B    0
+1495    4    0    0</span></p>
+
+<p class=MsoNormal><span style='font-family:"Arial",sans-serif'>         C   
+3    3 1363   19    0</span></p>
+
+<p class=MsoNormal><span style='font-family:"Arial",sans-serif'>         D   
+0    0    1 1266    5</span></p>
+
+<p class=MsoNormal><span style='font-family:"Arial",sans-serif'>         E   
+0    0    0    1 1437</span></p>
+
+<p class=MsoNormal><span style='font-family:"Courier New"'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-family:"Arial",sans-serif'>Accuracy </span></p>
+
+<p class=MsoNormal><span style='font-family:"Arial",sans-serif'>0.9928626</span></p>
+
+<p class=MsoNormal><span style='font-family:"Courier New"'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-family:"Courier New"'># Check the accuracy
+of model</span></p>
+
+<p class=MsoNormal><span style='font-family:"Courier New"'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-family:"Courier New"'>z$overall[1]</span></p>
+
+<p class=MsoNormal><span style='font-family:"Arial",sans-serif'>We load the
+test data and remove the NA values.</span></p>
+
+<p class=MsoNormal><span style='font-family:"Arial",sans-serif'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-family:"Courier New"'># Analyze the test
+data set</span></p>
+
+<p class=MsoNormal><span style='font-family:"Courier New"'># Read data frame</span></p>
+
+<p class=MsoNormal><span style='font-family:"Courier New"'>d=read.csv('pml-testing.csv',na.strings=c('','NA'))</span></p>
+
+<p class=MsoNormal><span style='font-family:"Courier New"'>e=d[,!apply(d,2,function(x)
+any(is.na(x)) )]</span></p>
+
+<p class=MsoNormal><span style='font-family:"Courier New"'>f=e[,-c(1:7)]</span></p>
+
+<p class=MsoNormal><span style='font-family:"Courier New"'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-family:"Arial",sans-serif'>Run the
+prediction using the random forest model.</span></p>
+
+<p class=MsoNormal><span style='font-family:"Arial",sans-serif'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-family:"Courier New"'># Predict using our
+model</span></p>
+
+<p class=MsoNormal><span style='font-family:"Courier New"'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-family:"Courier New"'>predicted=predict(model,f,type='class')</span></p>
+
+<p class=MsoNormal><span style='font-family:"Courier New"'>save(predicted,file='predicted.RData')</span></p>
+
+<p class=MsoNormal><span style='font-family:"Courier New"'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-family:"Arial",sans-serif'>The result is
+printed out.</span></p>
+
+<p class=MsoNormal><span style='font-family:"Arial",sans-serif'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-family:"Courier New"'># Check the result</span></p>
+
+<p class=MsoNormal><span style='font-family:"Courier New"'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-family:"Courier New"'>load('predicted.RData')</span></p>
+
+<p class=MsoNormal><span style='font-family:"Courier New"'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-family:"Courier New"'># Display results</span></p>
+
+<p class=MsoNormal><span style='font-family:"Courier New"'>print(predicted)</span></p>
+
+<p class=MsoNormal><span style='font-family:"Courier New"'>&nbsp;</span></p>
+
+<p class=MsoNormal><span style='font-family:"Arial",sans-serif'>1  2  3  4  5 
+6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 </span></p>
+
+<p class=MsoNormal><span style='font-family:"Arial",sans-serif'> B  A  B  A  A 
+E  D  B  A  A  B  C  B  A  E  E  A  B  B  B </span></p>
+
+<p class=MsoNormal><span style='font-family:"Arial",sans-serif'>Levels: A B C D
+E</span></p>
+
+</div>
+
+</body>
+
+</html>
