@@ -14,7 +14,7 @@ library('caret')
 library('e1071')
 ```
 
-Next, we read the data and remove the NA value.
+Next, we read the data and remove the NA values.
 
 ```{r}
 a=read.csv('pml-training.csv',na.strings=c('','NA'))
@@ -22,7 +22,7 @@ b=a[,!apply(a,2,function(x) any(is.na(x)) )]
 c=b[,-c(1:7)]
 ```
 
-We split the data into two group with the ratio 60% train and 40% test
+We split the data into two groups with the ratio 60% train and 40% test
 
 ```{r}
 subGrps=createDataPartition(y=c$classe, p=0.6, list=FALSE)
